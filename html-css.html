@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration & Result Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f6f9; margin:0; padding:0; }
+    header { background:#2c3e50; color:white; text-align:center; padding:1rem; }
+    .form-section, .result-section {
+      max-width:600px; margin:2rem auto; background:white; padding:2rem;
+      border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 { color:#2c3e50; }
+    label { display:block; margin-top:1rem; }
+    input, select {
+      width:100%; padding:0.5rem; margin-top:0.5rem;
+      border:1px solid #ccc; border-radius:4px;
+    }
+    button {
+      margin-top:1rem; padding:0.75rem; background:#3498db;
+      color:white; border:none; border-radius:4px; cursor:pointer; width:100%;
+    }
+    button:hover { background:#2980b9; }
+    .result-card {
+      background:#ecf0f1; padding:1rem; border-radius:6px;
+    }
+    .result-card p { margin:0.5rem 0; }
+    .subject-input { margin-bottom:1rem; }
+    .removeBtn {
+      margin-top:0.5rem; background:#e74c3c; width:auto; padding:0.4rem 0.8rem;
+    }
+    .removeBtn:hover { background:#c0392b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Student Registration & Result Portal</h1>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <form id="studentForm">
+        <h2>Student Details</h2>
+        <label>Roll Number:</label>
+        <input type="text" id="rollno" required>
+        
+        <label>Name:</label>
+        <input type="text" id="name" required>
+        
+        <label>Course:</label>
+        <select id="course" required onchange="toggleOtherCourse(this.value)">
+          <option value="">Select Course</option>
+          <option value="CS">Computer Science</option>
+          <option value="AI&DS">AI&DS</option>
+          <option value="AI&ML">AI&ML</option>
+          <option value="IT">IT</option>
+          <option value="Civil">Civil</option>
+          <option value="EEE">EEE</option>
+          <option value="ECE">ECE</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div id="otherCourseDiv" style="display:none; margin-top:1rem;">
+          <label>Enter Course Name:</label>
+          <input type="text" id="otherCourse">
+        </div>
+
+        <h2>Marks</h2>
+        <div id="subjects">
+          <div class="subject-input">
+            <label>Subject 1:</label>
+            <input type="number" min="0" max="100" required>
+          </div>
+        </div>
+        <button type="button" id="addSubject">+ Add Subject</button>
+        <button type="submit">Submit</button>
+        <button type="button" id="resetForm">Reset</button>
+      </form>
+    </section>
+
+    <section id="resultSection" class="result-section"></section>
+  </main>
+
+  <script>
+    const subjectsDiv = document.getElementById("subjects");
+    const addBtn = document.getElementById("addSubject");
+    const resetBtn = document.getElementById("resetForm");
+    let subjectCount = 1;
+
+    // Add new subject input dynamically with remove button
+    addBtn.addEventListener("click", () => {
+      subjectCount++;
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("subject-input");
+      newDiv.innerHTML = `
+        <label>Subject ${subjectCount}:</label>
+        <input type="number" min="0" max="100" required>
+        <button type="button" class="removeBtn">Remove</button>
+      `;
+      subjectsDiv.appendChild(newDiv);
+
+      // Attach remove functionality
+      newDiv.querySelector(".removeBtn").addEventListener("click", () => {
+        subjectsDiv.removeChild(newDiv);
+      });
+    });
+
+    // Toggle "Other" course input
+    function toggleOtherCourse(value) {
+      const otherDiv = document.getElementById("otherCourseDiv");
+      otherDiv.style.display = (value === "Other") ? "block" : "none";
+    }
+
+    // Handle form submission
+    document.getElementById("studentForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const rollno = document.getElementById("rollno").value;
+      const name = document.getElementById("name").value;
+      const course = (document.getElementById("course").value === "Other") 
+        ? document.getElementById("otherCourse").value 
+        : document.getElementById("course").value;
+
+      const inputs = subjectsDiv.querySelectorAll("input[type='number']");
+      let total = 0;
+      inputs.forEach(input => total += parseInt(input.value) || 0);
+
+      const average = total / inputs.length;
+      let grade = "";
+      if (average >= 90) grade = "A";
+      else if (average >= 75) grade = "B";
+      else if (average >= 50) grade = "C";
+      else grade = "D";
+
+      document.getElementById("resultSection").innerHTML = `
+        <div class="result-card">
+          <h2>Result</h2>
+          <p><strong>Roll Number:</strong> ${rollno}</p>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Course:</strong> ${course}</p>
+          <p><strong>Total Marks:</strong> ${total}</p>
+          <p><strong>Average:</strong> ${average.toFixed(2)}</p>
+          <p><strong>Grade:</strong> ${grade}</p>
+        </div>
+      `;
+    });
+
+    // Reset form completely (back to only Subject 1)
+    resetBtn.addEventListener("click", () => {
+      document.getElementById("studentForm").reset();
+      subjectsDiv.innerHTML = `
+        <div class="subject-input">
+          <label>Subject 1:</label>
+          <input type="number" min="0" max="100" required>
+        </div>
+      `;
+      subjectCount = 1;
+      document.getElementById("resultSection").innerHTML = "";
+    });
+  </script>
+</body>
+</html>

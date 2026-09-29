@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration & Result Portal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <header class="bg-dark text-white text-center py-3 mb-4">
+    <h1>Student Registration & Result Portal</h1>
+  </header>
+
+  <main class="container">
+    <!-- Registration Form -->
+    <section class="card shadow mb-4">
+      <div class="card-body">
+        <form id="studentForm">
+          <h2 class="mb-3">Student Details</h2>
+          
+          <div class="mb-3">
+            <label for="rollno" class="form-label">Roll Number</label>
+            <input type="text" id="rollno" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="course" class="form-label">Course</label>
+            <select id="course" class="form-select" required onchange="toggleOtherCourse(this.value)">
+              <option value="">Select Course</option>
+              <option value="CS">Computer Science</option>
+              <option value="AI&DS">AI&DS</option>
+              <option value="AI&ML">AI&ML</option>
+              <option value="IT">IT</option>
+              <option value="Civil">Civil</option>
+              <option value="EEE">EEE</option>
+              <option value="ECE">ECE</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div id="otherCourseDiv" class="mb-3 d-none">
+            <label for="otherCourse" class="form-label">Enter Course Name</label>
+            <input type="text" id="otherCourse" class="form-control">
+          </div>
+
+          <h2 class="mt-4 mb-3">Marks</h2>
+          <div id="subjects">
+            <div class="mb-3 subject-input">
+              <label class="form-label">Subject 1</label>
+              <input type="number" min="0" max="100" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="button" id="addSubject" class="btn btn-secondary">+ Add Subject</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" id="resetForm" class="btn btn-danger">Reset</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Result Display -->
+    <section id="resultSection"></section>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const subjectsDiv = document.getElementById("subjects");
+    const addBtn = document.getElementById("addSubject");
+    const resetBtn = document.getElementById("resetForm");
+    let subjectCount = 1;
+
+    // Add new subject input dynamically with remove button
+    addBtn.addEventListener("click", () => {
+      subjectCount++;
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("mb-3", "subject-input");
+      newDiv.innerHTML = `
+        <label class="form-label">Subject ${subjectCount}</label>
+        <input type="number" min="0" max="100" class="form-control" required>
+        <button type="button" class="btn btn-sm btn-outline-danger mt-2 removeBtn">Remove</button>
+      `;
+      subjectsDiv.appendChild(newDiv);
+
+      // Attach remove functionality
+      newDiv.querySelector(".removeBtn").addEventListener("click", () => {
+        subjectsDiv.removeChild(newDiv);
+      });
+    });
+
+    // Toggle "Other" course input
+    function toggleOtherCourse(value) {
+      const otherDiv = document.getElementById("otherCourseDiv");
+      otherDiv.classList.toggle("d-none", value !== "Other");
+    }
+
+    // Handle form submission
+    document.getElementById("studentForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const rollno = document.getElementById("rollno").value;
+      const name = document.getElementById("name").value;
+      const course = (document.getElementById("course").value === "Other") 
+        ? document.getElementById("otherCourse").value 
+        : document.getElementById("course").value;
+
+      const inputs = subjectsDiv.querySelectorAll("input[type='number']");
+      let total = 0;
+      inputs.forEach(input => total += parseInt(input.value) || 0);
+
+      const average = total / inputs.length;
+      let grade = "";
+      if (average >= 90) grade = "A";
+      else if (average >= 75) grade = "B";
+      else if (average >= 50) grade = "C";
+      else grade = "D";
+
+      document.getElementById("resultSection").innerHTML = `
+        <div class="card shadow">
+          <div class="card-body">
+            <h2 class="card-title">Result</h2>
+            <p><strong>Roll Number:</strong> ${rollno}</p>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Course:</strong> ${course}</p>
+            <p><strong>Total Marks:</strong> ${total}</p>
+            <p><strong>Average:</strong> ${average.toFixed(2)}</p>
+            <p><strong>Grade:</strong> ${grade}</p>
+          </div>
+        </div>
+      `;
+    });
+
+    // Reset form completely (back to only Subject 1)
+    resetBtn.addEventListener("click", () => {
+      document.getElementById("studentForm").reset();
+      subjectsDiv.innerHTML = `
+        <div class="mb-3 subject-input">
+          <label class="form-label">Subject 1</label>
+          <input type="number" min="0" max="100" class="form-control" required>
+        </div>
+      `;
+      subjectCount = 1;
+      document.getElementById("resultSection").innerHTML = "";
+    });
+  </script>
+</body>
+</html>
