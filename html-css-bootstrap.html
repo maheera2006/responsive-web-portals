@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Appointment & Patient Portal</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#home">Health Portal</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navMenu" aria-controls="navMenu"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#registration">Patient Registration</a></li>
+          <li class="nav-item"><a class="nav-link" href="#appointments">Appointments</a></li>
+          <li class="nav-item"><a class="nav-link" href="#health">Health Information</a></li>
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#technologies">Technologies</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4" id="home">
+
+    <!-- Success message -->
+    <div id="successAlert" class="alert alert-success d-none" role="alert"></div>
+
+    <!-- Patient Registration Form -->
+    <div class="card shadow mb-4" id="registration">
+      <div class="card-body">
+        <h2 class="card-title">Patient Registration</h2>
+        <form id="patientForm">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="pname">Patient Name</label>
+              <input type="text" id="pname" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input type="email" id="email" class="form-control" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="mobile">Mobile Number</label>
+              <input type="tel" id="mobile" class="form-control" pattern="[0-9]{10}"
+                     maxlength="10" title="Enter a 10-digit mobile number" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="dob">Date of Birth</label>
+              <input type="date" id="dob" class="form-control" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="gender">Gender</label>
+              <select id="gender" class="form-select" required>
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="blood">Blood Group</label>
+              <select id="blood" class="form-select" required>
+                <option value="">Select</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option>
+                <option>AB+</option><option>AB-</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="dept">Department</label>
+            <select id="dept" class="form-select" required>
+              <option value="">Select Department</option>
+              <option>Cardiology</option>
+              <option>Neurology</option>
+              <option>Orthopedics</option>
+              <option>Pediatrics</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="doctor">Doctor Selection</label>
+            <select id="doctor" class="form-select" required>
+              <option value="">Select Doctor</option>
+              <option>Dr. Smith</option>
+              <option>Dr. Johnson</option>
+              <option>Dr. Lee</option>
+            </select>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="adate">Appointment Date</label>
+              <input type="date" id="adate" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="atime">Appointment Time</label>
+              <input type="time" id="atime" class="form-control" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="address">Address</label>
+            <textarea id="address" class="form-control" rows="2" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="symptoms">Symptoms / Health Concern</label>
+            <textarea id="symptoms" class="form-control" rows="3" required></textarea>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="button" id="resetForm" class="btn btn-danger">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Appointment Section -->
+    <div class="card shadow mb-4" id="appointments">
+      <div class="card-body">
+        <h2 class="card-title">Appointments</h2>
+        <div class="table-responsive">
+          <table class="table table-striped" id="appointmentTable">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th><th>Patient Name</th><th>Department</th>
+                <th>Doctor</th><th>Date</th><th>Time</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Information Section -->
+    <div class="card shadow mb-4" id="health">
+      <div class="card-body" id="healthInfo">
+        <h2 class="card-title">Health Information</h2>
+        <p>No patient selected yet.</p>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class="card shadow mb-4" id="services">
+      <div class="card-body">
+        <h2 class="card-title">Services</h2>
+        <p class="mb-0">Cardiology, Neurology, Orthopedics and Pediatrics consultations.</p>
+      </div>
+    </div>
+
+    <!-- Technologies Section -->
+    <div class="card shadow mb-4" id="technologies">
+      <div class="card-body">
+        <h2 class="card-title">Technologies</h2>
+        <p class="mb-0">Built with HTML, Bootstrap 5 and JavaScript.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let appointmentId = 1;
+
+    const form = document.getElementById("patientForm");
+    const healthInfo = document.getElementById("healthInfo");
+    const successAlert = document.getElementById("successAlert");
+
+    // Escape user input so it can't inject HTML/scripts
+    function escapeHtml(value) {
+      const div = document.createElement("div");
+      div.textContent = value;
+      return div.innerHTML;
+    }
+
+    function showEmptyHealthInfo() {
+      healthInfo.innerHTML = `
+        <h2 class="card-title">Health Information</h2>
+        <p>No patient selected yet.</p>
+      `;
+    }
+
+    // Appointment date can't be in the past; date of birth can't be in the future
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("adate").min = today;
+    document.getElementById("dob").max = today;
+
+    // Submit handler
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const pname = document.getElementById("pname").value.trim();
+      const dept = document.getElementById("dept").value;
+      const doctor = document.getElementById("doctor").value;
+      const adate = document.getElementById("adate").value;
+      const atime = document.getElementById("atime").value;
+      const blood = document.getElementById("blood").value;
+      const symptoms = document.getElementById("symptoms").value.trim();
+      const id = "AP" + String(appointmentId).padStart(3, "0");
+
+      // Add row to appointments table
+      const tableBody = document.querySelector("#appointmentTable tbody");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${id}</td>
+        <td>${escapeHtml(pname)}</td>
+        <td>${escapeHtml(dept)}</td>
+        <td>${escapeHtml(doctor)}</td>
+        <td>${escapeHtml(adate)}</td>
+        <td>${escapeHtml(atime)}</td>
+        <td><span class="badge bg-success">Confirmed</span></td>
+      `;
+      tableBody.appendChild(row);
+
+      // Show patient details
+      healthInfo.innerHTML = `
+        <h2 class="card-title">Health Information</h2>
+        <p><strong>Patient Name:</strong> ${escapeHtml(pname)}</p>
+        <p><strong>Blood Group:</strong> ${escapeHtml(blood)}</p>
+        <p><strong>Department:</strong> ${escapeHtml(dept)}</p>
+        <p><strong>Doctor:</strong> ${escapeHtml(doctor)}</p>
+        <p><strong>Appointment Date:</strong> ${escapeHtml(adate)}</p>
+        <p><strong>Appointment Time:</strong> ${escapeHtml(atime)}</p>
+        <p><strong>Symptoms:</strong> ${escapeHtml(symptoms)}</p>
+        <p><strong>Status:</strong> Confirmed</p>
+      `;
+
+      // Success message
+      successAlert.textContent = "Appointment " + id + " confirmed for " + pname + ".";
+      successAlert.classList.remove("d-none");
+
+      appointmentId++;
+      // Form is intentionally not reset here, so Register does not clear it
+    });
+
+    // Reset handler
+    document.getElementById("resetForm").addEventListener("click", function () {
+      form.reset();
+      showEmptyHealthInfo();
+      successAlert.classList.add("d-none");
+      document.querySelector("#appointmentTable tbody").innerHTML = "";
+      appointmentId = 1;
+    });
+  </script>
+</body>
+</html>
